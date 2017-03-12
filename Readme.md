@@ -21,7 +21,13 @@ log.error('My first error line.');
 
 ## Set the log level
 
-The default log level is `info`.
+The default log level is `info`.  The available log levels:
+ - error
+ - warn
+ - info
+ - verbose
+ - debug
+ - silly
 
 ```JavaScript
 log.setLevel(log.levels.error);
@@ -29,10 +35,10 @@ log.setLevel(log.levels.error);
 log.debug('This happened!');
 log.info('My first info line.');
 log.warn('You have an object: ', {obj: 'a'});
-log.error('My first error line.');
+log.error('My second error line.');
 
 // Output:
-// stderr: 2017-03-10T09:44:06.394Z error: My first error line.
+// stderr: 2017-03-10T09:44:06.394Z error: My second error line.
 ```
 
 ## Set the label
@@ -87,3 +93,28 @@ log.info('Another info line.');
 // Output:
 // stdout: INFO 1489198884388 Another info line.
 ```
+
+## Set the output stream
+
+By default the `error` and `warn` levels log output to `console.error`, while all other levels log
+output to `console.log`.
+
+You can change the output using the following command.
+
+```JavaScript
+log.setOutput({
+    error: myErrorStream
+    log: myLogStream
+});
+```
+
+
+## License
+
+Copyright 2017 Simon M. Werner
+
+Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.  See the NOTICE file distributed with this work for additional information regarding copyright ownership.  The ASF licenses this file to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at
+
+  [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.
