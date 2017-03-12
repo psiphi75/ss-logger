@@ -1,12 +1,13 @@
 {
   "name": "ss-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Super Simple JavaScript logging utility",
   "main": "index.js",
   "scripts": {
     "test": "node test/test.js",
     "test-coverage": "istanbul cover test/test.js"
   },
+  "repository": "https://github.com/psiphi75/ss-logger",
   "keywords": [
     "logger",
     "debug",
