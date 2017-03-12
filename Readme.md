@@ -1,6 +1,7 @@
 # Super Simple JavaScript logger
 
-A super simple JavaScript logger.  It allows labels/tags, custom logging levels, custom output formatting and it's small.
+A super simple JavaScript logger.  It allows labels/tags, custom logging levels, custom output
+formatting and it's small.  It has no dependancies.
 
 ## Usage
 
@@ -70,7 +71,7 @@ myFuncLog.debug('My debug message.');
 yourMethodLog.debug('Your debug message');
 
 // Output:
-// stdout: 2017-03-10T09:44:06.391Z info MyFunction: My first info line.
+// stdout: 2017-03-10T09:44:06.391Z info MyFunction: My debug message.
 ```
 
 ## Set the output format
