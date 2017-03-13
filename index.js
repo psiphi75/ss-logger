@@ -84,7 +84,6 @@ const LEVELS = {
   * // stdout: 2017-03-10T09:44:06.391Z info MyFunction: My first info line.
   * // stderr: 2017-03-10T09:44:06.396Z error YourMethod: You have an object: {"obj":"a"}
   * // stderr: 2017-03-10T09:44:06.394Z error YourMethod: My first error line.
-  *
   */
  function createLogger(label) {
 
@@ -144,7 +143,6 @@ const LEVELS = {
      //
 
      function joinMsgArgs(msgArgs) {
-
          return msgArgs.map((arg) => {
              if (typeof arg === 'string') {
                  return arg;
@@ -173,7 +171,6 @@ const LEVELS = {
       * @private
       */
      let format = function format(date, level, fnLabel, msgArgs) {
-
          const l = (fnLabel === null || fnLabel === undefined) ? '' : ` ${fnLabel}`;
          return `${date.toISOString()} ${level}${l}: ${joinMsgArgs(msgArgs)}`;
      };
@@ -189,7 +186,6 @@ const LEVELS = {
 
           const args = [].slice.call(arguments);
           args.splice(0, 1);
-
 
           const str = format(new Date(), levelName, label, args);
           if (LEVELS[levelName] <= LEVELS.warn) {
@@ -246,7 +242,7 @@ const LEVELS = {
       *    - info
       *    - verbose
       *    - debug
-      *    - silly.
+      *    - silly
       * @param {number} newLogLevel - The new level.
       * @throws {Error}
       *
@@ -285,9 +281,6 @@ const LEVELS = {
      return logger;
 
 }
-
-/**
- */
 
 createLogger.levels = LEVELS;
 module.exports = createLogger;

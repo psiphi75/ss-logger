@@ -51,8 +51,6 @@ yourMethodLog.error('My first error line.');
 // stderr: 2017-03-10T09:44:06.394Z error YourMethod: My first error line.
 ```
 
-### levels
-
 ## setOutput
 
 By default the `error` and `warn` levels log output to `console.error`, while all other
@@ -106,7 +104,7 @@ will be output.  The default level is `info`. The available log levels are:
 -   info
 -   verbose
 -   debug
--   silly.
+-   silly
 
 **Parameters**
 
