@@ -23,22 +23,37 @@
 
 'use strict';
 // @flow
-
 /**
- * This will be the logger object that we populate with functions and
- * return to the caller.
- * @typedef Logger
- * @property {Function} setLevel
- * @property {Function} setFormatFunction
- * @property {Object} levels
- * @property {Function} error
- * @property {Function} warn
- * @property {Function} info
- * @property {Function} verbose
- * @property {Function} debug
- * @property {Function} silly
+ * A super simple JavaScript logger.  It allows labels/tags, custom logging levels, custom output
+ * formatting and it's small.  It has no dependancies.
+ * @module ss-logger
+ * @license Apache-2.0
+ * @example
+ * // Standard usage
+ * const log = require('ss-logger')();
+ *
+ * log.info('My first info line.');
+ * log.warn('You have an object: ', {obj: 'a'});
+ * log.error('My first error line.');
+ *
+ * // Output:
+ * // stdout: 2017-03-10T09:44:06.391Z info: My first info line.
+ * // stderr: 2017-03-10T09:44:06.396Z error: You have an object: {"obj":"a"}
+ * // stderr: 2017-03-10T09:44:06.394Z error: My first error line.
+ *
  */
 
+/**
+ * The allowed levels.
+ * @type {Object}
+ * @property {number} error - prints to std::error
+ * @property {number} warn - prints to std::error
+ * @property {number} info - prints to std::out
+ * @property {number} verbose - prints to std::out
+ * @property {number} debug - prints to std::out
+ * @property {number} silly - prints to std::out
+ * @private
+ */
 const LEVELS = {
     error: 0,
     warn: 1,
@@ -48,15 +63,46 @@ const LEVELS = {
     silly: 5
 };
 
-/**
- * Create a new instance of of the logger.
- * @param  {string} [label]  - The label to print out on lines.  Recommend not
- *                             to use spaces.
- * @returns {Logger}         - The logger that can be used.
- */
+
+ /**
+  * The `ss-logger` module returns `createLogger()` by default.
+  *
+  * @param  {string} [label]  - The label to print out on lines.  Recommend not to use spaces.
+  * @public
+  *
+  * @example
+  * // Each log line can have it's own label / tag.
+  *
+  * const myFuncLog = require('ss-logger')('MyFunction');
+  * const yourMethodLog = require('ss-logger')('YourMethod');
+  *
+  * myFuncLog.info('My first info line.');
+  * yourMethodLog.warn('You have an object: ', {obj: 'a'});
+  * yourMethodLog.error('My first error line.');
+  *
+  * // Output:
+  * // stdout: 2017-03-10T09:44:06.391Z info MyFunction: My first info line.
+  * // stderr: 2017-03-10T09:44:06.396Z error YourMethod: You have an object: {"obj":"a"}
+  * // stderr: 2017-03-10T09:44:06.394Z error YourMethod: My first error line.
+  *
+  */
  function createLogger(label) {
 
-     /** @type {Logger|*} */
+     /**
+      * This will be the logger object that we populate with functions and
+      * return to the caller.
+      * @typedef Logger
+      * @property {Function} setLevel
+      * @property {Function} setFormatFunction
+      * @property {Object} levels
+      * @property {Function} error
+      * @property {Function} warn
+      * @property {Function} info
+      * @property {Function} verbose
+      * @property {Function} debug
+      * @property {Function} silly
+      * @private
+      */
      const logger = {
          levels: LEVELS
      };
@@ -69,12 +115,17 @@ const LEVELS = {
      let outputFunctions;
 
      /**
-      * Set the output logger.  The default is console.log and console.error.
+      * By default the `error` and `warn` levels log output to `console.error`, while all other
+      * levels log output to `console.log`.
       * @param {Object} output - An object with 'log' and 'error' functions.
-      * @throws
+      * @throws {Error}
+      * @example
+      * log.setOutput({
+      *     error: myErrorStream
+      *     log: myLogStream
+      * });
       */
-     logger.setOutput = function setOutput(output) {
-
+     function setOutput(output) {
          if (!output ||
              typeof output.log !== 'function') {
              throw Error('logger.setOutput: expect an object as the parameter with "log" and "error" properties.');
@@ -83,7 +134,8 @@ const LEVELS = {
              log: output.log,
              error: (typeof output.error === 'function') ? output.error : output.log
          };
-     };
+     }
+     logger.setOutput = setOutput;
      logger.setOutput(console);
 
 
@@ -118,6 +170,7 @@ const LEVELS = {
       * @param  {string} [fnLabel] - The label that we are logging to.
       * @param  {Array} [msgArgs]  - The multiple message parameters.
       * @returns {string}          - The formatted message to print.
+      * @private
       */
      let format = function format(date, level, fnLabel, msgArgs) {
 
@@ -130,6 +183,7 @@ const LEVELS = {
       * Create the log for writing.
       * @param  {string} levelName - The name of the level to log at.
       * @param  {...*} args        - The parameters of the original log.
+      * @private
       */
       function writeLog(levelName) {
 
@@ -150,15 +204,24 @@ const LEVELS = {
       * Override the default format function.  Must supply a function to handle the following
       * parameters (date, level, fnLabel, ...msgArgs).
       * @param {Function} newFormatFunction - The new function to do the formatting of the output.
-      * @throws
+      * @throws {Error}
+      * @example
+      * log.setFormatFunction(function (date, level, label, ...msgArgs) {
+      *      return `${level.toUpperCase()} ${date.getTime()} ${msgArgs.toString()}`;
+      * });
+      * log.info('Another info line.');
+      *
+      * // Output:
+      * // stdout: INFO 1489198884388 Another info line.
       */
-     logger.setFormatFunction = function setFormatFunction(newFormatFunction) {
+     function setFormatFunction(newFormatFunction) {
 
          if (typeof newFormatFunction !== 'function') {
              throw Error('logger.setFormatFunction: expect a function as parameter.');
          }
          format = newFormatFunction;
-     };
+     }
+     logger.setFormatFunction = setFormatFunction;
 
 
      //
@@ -177,9 +240,26 @@ const LEVELS = {
 
      /**
       * Set the log level of the logger.  Anything equal to or below this level
-      * will be output.  The default level is 'info'.
+      * will be output.  The default level is `info`. The available log levels are:
+      *    - error
+      *    - warn
+      *    - info
+      *    - verbose
+      *    - debug
+      *    - silly.
       * @param {number} newLogLevel - The new level.
-      * @throws
+      * @throws {Error}
+      *
+      * @example
+      * log.setLevel(log.levels.error);
+      *
+      * log.debug('This happened!');
+      * log.info('My first info line.');
+      * log.warn('You have an object: ', {obj: 'a'});
+      * log.error('My second error line.');
+      *
+      * // Output:
+      * // stderr: 2017-03-10T09:44:06.394Z error: My second error line.
       */
      function setLevel(newLogLevel) {
          if (isNaN(newLogLevel) || newLogLevel < 0 || newLogLevel > LEVELS.silly) {
@@ -204,7 +284,35 @@ const LEVELS = {
 
      return logger;
 
- }
+}
+
+/**
+ */
 
 createLogger.levels = LEVELS;
 module.exports = createLogger;
+
+/**
+ * ## Set debug log level from console
+ *
+ * From the terminal:
+ * ```sh
+ * DEBUG=MyFunction node app.js
+ * ```
+ *
+ * **Note**: you can also use the following to enable debugging for all output:
+ *   `DEBUG=* node app.js`
+ *
+ * ```JavaScript
+ * // app.js
+ *
+ * const myFuncLog = require('ss-logger')('MyFunction');
+ * const yourMethodLog = require('ss-logger')('YourMethod');
+ *
+ * myFuncLog.debug('My debug message.');
+ * yourMethodLog.debug('Your debug message');
+ *
+ * // Output:
+ * // stdout: 2017-03-10T09:44:06.391Z info MyFunction: My debug message.
+ * ```
+ */
