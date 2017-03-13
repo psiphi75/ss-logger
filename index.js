@@ -179,10 +179,10 @@ const LEVELS = {
      /**
       * Create the log for writing.
       * @param  {string} levelName - The name of the level to log at.
-      * @param  {...*} args        - The parameters of the original log.
+      * @param  {...*} varArgs     - The parameters of the original log.
       * @private
       */
-      function writeLog(levelName) {
+      function writeLog(levelName, varArgs) {       // eslint-disable-line no-unused-vars
 
           const args = [].slice.call(arguments);
           args.splice(0, 1);
