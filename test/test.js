@@ -28,8 +28,9 @@ const test = require('tape');
 
 const noArgs = undefined;
 const singleArg = ['This is a test.'];
-const multiArgs = [11, 'You have an object:', { obj: 'a' }, '', [], [{ obj: { obj: 'b' } }]];
-const multiArgsExpectedResult = '11 You have an object: {"obj":"a"}  [] [{"obj":{"obj":"b"}}]';
+function fn() { return 'zzz'; }
+const multiArgs = [true, false, null, undefined, 11, 'You have an object:', { obj: 'a' }, '', [], [{ obj: { obj: 'b' } }], fn];
+const multiArgsExpectedResult = 'true false null undefined 11 You have an object: {"obj":"a"}  [] [{"obj":{"obj":"b"}}] function fn() { return \'zzz\'; }';
 
 function splitHeaderMessage(str) {
     const delimiter = ':';

@@ -161,7 +161,11 @@ const LEVELS = {
              return '';
          }
          return msgArgs.map((arg) => {
-             if (typeof arg === 'string') {
+            if (arg === null) {
+                return 'null';
+            } else if (typeof arg === 'undefined') {
+                return 'undefined';
+            } else if (typeof arg === 'string') {
                  return arg;
              } else if (typeof arg === 'object') {
                  try {
@@ -169,7 +173,7 @@ const LEVELS = {
                  } catch (ex) {
                      return arg.toString();
                  }
-             } else {
+             } else { // boolean, symbol, number, function
                  return arg.toString();
              }
          }).join(' ');
