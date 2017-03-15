@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node test/test.js",
     "test-coverage": "istanbul cover test/test.js",
-    "build-doc": "documentation build index.js --markdown-toc false -f md -o Readme.md"
+    "build-doc": "documentation build index.js --markdown-toc false -f md -o Readme.md",
+    "build-flow": "flow-jsdoc -f index.js > annotations/index.js; flow annotations/index.js; cd .."
   },
   "repository": "https://github.com/psiphi75/ss-logger",
   "keywords": [

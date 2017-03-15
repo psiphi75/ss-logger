@@ -20,9 +20,10 @@
  *   under the License.                                              *
  *                                                                   *
  *********************************************************************/
+ // @flow
 
 'use strict';
-// @flow
+
 /**
  * A super simple JavaScript logger.  It allows labels/tags, custom logging levels, custom output
  * formatting and it's small.  It has no dependancies.
@@ -92,6 +93,7 @@ const LEVELS = {
       * return to the caller.
       * @typedef Logger
       * @property {Function} setLevel
+      * @property {Function} setOutput
       * @property {Function} setFormatFunction
       * @property {Object} levels
       * @property {Function} error
@@ -102,7 +104,19 @@ const LEVELS = {
       * @property {Function} silly
       * @private
       */
-     const logger = {
+     /*:: type Logger = {
+               setLevel?: function,
+               setOutput?: function,
+               setFormatFunction?: function,
+               levels: Object,
+               error?: function,
+               warn?: function,
+               info?: function,
+               verbose?: function,
+               debug?: function,
+               silly?: function,
+      };*/
+     const logger /*: Logger */ = {
          levels: LEVELS
      };
      let logLevel = LEVELS.info;
@@ -143,6 +157,9 @@ const LEVELS = {
      //
 
      function joinMsgArgs(msgArgs) {
+         if (!msgArgs) {
+             return '';
+         }
          return msgArgs.map((arg) => {
              if (typeof arg === 'string') {
                  return arg;
@@ -163,14 +180,14 @@ const LEVELS = {
       * The default log formatting.  This can overriden by the user by using
       * `log.setFormatFunction()`.
       *
-      * @param  {Date} date        - The date the message was created.
-      * @param  {string} level     - The current log level.
-      * @param  {string} [fnLabel] - The label that we are logging to.
-      * @param  {Array} [msgArgs]  - The multiple message parameters.
-      * @returns {string}          - The formatted message to print.
+      * @param  {Date} date             - The date the message was created.
+      * @param  {string} level          - The current log level.
+      * @param  {string} [fnLabel]      - The label that we are logging to.
+      * @param  {Array.<*>} [msgArgs] - The multiple message parameters.
+      * @returns {string}               - The formatted message to print.
       * @private
       */
-     let format = function format(date, level, fnLabel, msgArgs) {
+     let format = function formatFn(date, level, fnLabel, msgArgs) {
          const l = (fnLabel === null || fnLabel === undefined) ? '' : ` ${fnLabel}`;
          return `${date.toISOString()} ${level}${l}: ${joinMsgArgs(msgArgs)}`;
      };
