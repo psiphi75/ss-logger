@@ -26,10 +26,10 @@
 const createLogger = require('../');
 const test = require('tape');
 
+const noArgs = undefined;
 const singleArg = ['This is a test.'];
 const multiArgs = [11, 'You have an object:', { obj: 'a' }, '', [], [{ obj: { obj: 'b' } }]];
 const multiArgsExpectedResult = '11 You have an object: {"obj":"a"}  [] [{"obj":{"obj":"b"}}]';
-
 
 function splitHeaderMessage(str) {
     const delimiter = ':';
@@ -116,6 +116,13 @@ runTest('Multi-arg info', 'info', undefined, 'log', multiArgs, multiArgsExpected
 runTest('Multi-arg verbose', 'verbose', undefined, 'log', multiArgs, multiArgsExpectedResult, false);
 runTest('Multi-arg debug', 'debug', undefined, 'log', multiArgs, multiArgsExpectedResult, false);
 runTest('Multi-arg silly', 'silly', undefined, 'log', multiArgs, multiArgsExpectedResult, false);
+
+runTest('noArgs error', 'error', undefined, 'error', noArgs, '', true);
+runTest('noArgs warn', 'warn', undefined, 'error', noArgs, '', true);
+runTest('noArgs info', 'info', undefined, 'log', noArgs, '', true);
+runTest('noArgs verbose', 'verbose', undefined, 'log', noArgs, '', false);
+runTest('noArgs debug', 'debug', undefined, 'log', noArgs, '', false);
+runTest('noArgs silly', 'silly', undefined, 'log', noArgs, '', false);
 
 runTest('Debug all error', 'error', undefined, 'error', singleArg, singleArg[0], true, '*');
 runTest('Debug all warn', 'warn', undefined, 'error', singleArg, singleArg[0], true, '*');
