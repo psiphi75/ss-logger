@@ -12,12 +12,12 @@ formatting and it's small.  It has no dependancies.
 const log = require('ss-logger')();
 
 log.info('My first info line.');
-log.warn('You have an object: ', {obj: 'a'});
+log.warn({my_obj: 'a'});
 log.error('My first error line.');
 
 // Output:
 // stdout: 2017-03-10T09:44:06.391Z info: My first info line.
-// stderr: 2017-03-10T09:44:06.396Z error: You have an object: {"obj":"a"}
+// stderr: 2017-03-10T09:44:06.396Z warn: {"my_obj":"a"}
 // stderr: 2017-03-10T09:44:06.394Z error: My first error line.
 ```
 
@@ -38,17 +38,17 @@ The `ss-logger` module returns `createLogger()` by default.
 ```javascript
 // Each log line can have it's own label / tag.
 
-const myFuncLog = require('ss-logger')('MyFunction');
-const yourMethodLog = require('ss-logger')('YourMethod');
+const myFuncLog = require('ss-logger')('MyFunc');
+const yourMethodLog = require('ss-logger')('Yours');
 
 myFuncLog.info('My first info line.');
-yourMethodLog.warn('You have an object: ', {obj: 'a'});
+yourMethodLog.warn({obj: 'a'});
 yourMethodLog.error('My first error line.');
 
 // Output:
-// stdout: 2017-03-10T09:44:06.391Z info MyFunction: My first info line.
-// stderr: 2017-03-10T09:44:06.396Z error YourMethod: You have an object: {"obj":"a"}
-// stderr: 2017-03-10T09:44:06.394Z error YourMethod: My first error line.
+// stdout: 2017-03-10T09:44:06.391Z info MyFunc: My first info.
+// stderr: 2017-03-10T09:44:06.396Z warn Yours: {"obj":"a"}
+// stderr: 2017-03-10T09:44:06.394Z error Yours: My first err.
 ```
 
 ## setOutput
@@ -84,7 +84,10 @@ parameters (date, level, fnLabel, ...msgArgs).
 
 ```javascript
 log.setFormatFunction(function (date, level, label, ...msgArgs) {
-     return `${level.toUpperCase()} ${date.getTime()} ${msgArgs.toString()}`;
+      const l = level.toUpperCase();
+      const d = date.getTime();
+      const s = msgArgs.toString();
+      return `${l} ${d} ${s}`;
 });
 log.info('Another info line.');
 
@@ -142,12 +145,12 @@ DEBUG=MyFunction node app.js
 ```JavaScript
 // app.js
 
-const myFuncLog = require('ss-logger')('MyFunction');
-const yourMethodLog = require('ss-logger')('YourMethod');
+const myFuncLog = require('ss-logger')('MyFunc');
+const yourMethodLog = require('ss-logger')('Yours');
 
 myFuncLog.debug('My debug message.');
 yourMethodLog.debug('Your debug message');
 
 // Output:
-// stdout: 2017-03-10T09:44:06.391Z info MyFunction: My debug message.
+// stdout: 2017-03-10T09:44:06.391Z info MyFunc: My debug message.
 ```
