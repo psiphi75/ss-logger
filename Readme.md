@@ -142,7 +142,7 @@ DEBUG=MyFunction node app.js
 **Note**: you can also use the following to enable debugging for all output:
   `DEBUG=* node app.js`
 
-```JavaScript
+```javascript
 // app.js
 
 const myFuncLog = require('ss-logger')('MyFunc');
